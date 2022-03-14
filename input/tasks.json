@@ -1,0 +1,38 @@
+{
+    "task1": {
+        "name": "fotos",
+        "resources": [
+            1,
+            5
+        ],
+        "payoff": 10,
+        "completed": false
+    },
+    "task2": {
+        "name": "mantenimiento",
+        "resources": [
+            1,
+            2
+        ],
+        "payoff": 1,
+        "completed": false
+    },
+    "task3": {
+        "name": "pruebas",
+        "resources": [
+            5,
+            6
+        ],
+        "payoff": 1,
+        "completed": false
+    },
+    "task4": {
+        "name": "fsck",
+        "resources": [
+            1,
+            6
+        ],
+        "payoff": 0.1,
+        "completed": false
+    }
+}
