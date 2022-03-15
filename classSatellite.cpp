@@ -9,10 +9,11 @@ Satellite::Satellite()
 };
 
 /* Destructor */
-//Satellite::~Satellite()
-//{
-//    
-//};
+Satellite::~Satellite()
+{
+    std::cout << "Destructing satelliteID: " << this->satelliteId << std::endl;
+    this->resourcesInUse = std::vector<int>();
+};
 
 /* Set satellite from JSON object      */
 // TODO: redefine as constructor?
