@@ -1,30 +1,15 @@
 #include "taskManager.hpp"
 #include "classTask.hpp"
 #include "classSatellite.hpp"
+#include "utilities.hpp"
 
 int main(int argc, char **argv)
 {
     int counter, counterNested;
 
-    /* ============================ */
-    /* Create array of Task objects */
-    // TODO: Move to function
-    /* ============================ */
-    std::ifstream tasksInputFile(argv[1]); // Read tasks into json object
-    json tasksJSON;
-    tasksInputFile >> tasksJSON;
-    int tasksNumber = 0; // Get number of tasks
-    for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
-    {
-        tasksNumber += 1;
-    }
-    Task tasksArray[tasksNumber]; // Define array of tasks (calling default constructor):
-    counter = 0;
-    for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj) // Set tasks details
-    {
-        tasksArray[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value());
-        counter += 1;
-    }
+    /* Create array of Task objects from input */
+    int tasksNumber;                                   // Total number of tasks
+    Task *tasksArray = getTasks(argv[1], tasksNumber); // TODO: Move tasksArray to vec?
 
     /* =============================== */
     /* Create array of task priorities */
@@ -57,21 +42,24 @@ int main(int argc, char **argv)
     /* Create array of Satellite objects */
     // TODO: Move to function
     /* ================================= */
-    std::ifstream satellitesInputFile(argv[2]);
-    json satellitesJSON;
-    satellitesInputFile >> satellitesJSON;
-    int satellitesNumber = 0; // Get number of satellites
-    for (json::iterator satellitesJSONObj = satellitesJSON.begin(); satellitesJSONObj != satellitesJSON.end(); ++satellitesJSONObj)
-    {
-        satellitesNumber += 1;
-    }
-    Satellite satellitesArray[satellitesNumber]; // Define array of satellites (calling default constructor):
-    counter = 0;
-    for (json::iterator satellitesJSONObj = satellitesJSON.begin(); satellitesJSONObj != satellitesJSON.end(); ++satellitesJSONObj) // Set satellites details
-    {
-        satellitesArray[counter].setFromJSONObj(satellitesJSONObj.key(), satellitesJSONObj.value());
-        counter += 1;
-    }
+    // std::ifstream satellitesInputFile(argv[2]);
+    // json satellitesJSON;
+    // satellitesInputFile >> satellitesJSON;
+    // int satellitesNumber = 0; // Get number of satellites
+    // for (json::iterator satellitesJSONObj = satellitesJSON.begin(); satellitesJSONObj != satellitesJSON.end(); ++satellitesJSONObj)
+    // {
+    //     satellitesNumber += 1;
+    // }
+    // Satellite satellitesArray[satellitesNumber]; // Define array of satellites (calling default constructor):
+    // counter = 0;
+    // for (json::iterator satellitesJSONObj = satellitesJSON.begin(); satellitesJSONObj != satellitesJSON.end(); ++satellitesJSONObj) // Set satellites details
+    // {
+    //     satellitesArray[counter].setFromJSONObj(satellitesJSONObj.key(), satellitesJSONObj.value());
+    //     counter += 1;
+    // }
+    /* Create array of Satellite objects from input */
+    int satellitesNumber;                                             // Total number of satellites
+    Satellite *satellitesArray = getSatellites(argv[2], satellitesNumber); // TODO: Move tasksSatellites to vec?
 
     /* ============================= */
     /* Assign satellite to each task */
@@ -99,6 +87,17 @@ int main(int argc, char **argv)
                 std::cout << "Can't assign " << tasksArray[idx].taskId << " to " << satellitesArray[itSatellite].satelliteId << ", resources occupied " << std::endl;
             }
         }
+    }
+
+    /* Call task destructor */
+    for (counter = 0; counter < tasksNumber; ++counter)
+    {
+        tasksArray[counter].~Task();
+    }
+    /* Call satellite destructor */
+    for (counter = 0; counter < satellitesNumber; ++counter)
+    {
+        satellitesArray[counter].~Satellite();
     }
 
     // write prettified JSON to another file

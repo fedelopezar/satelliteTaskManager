@@ -11,7 +11,7 @@ Satellite::Satellite()
 /* Destructor */
 Satellite::~Satellite()
 {
-    std::cout << "Destructing satelliteID: " << this->satelliteId << std::endl;
+    std::cout << "Destructing object " << this->satelliteId << std::endl;
     this->resourcesInUse = std::vector<int>();
 };
 

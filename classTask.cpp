@@ -13,7 +13,7 @@ Task::Task()
 /* Destructor */
 Task::~Task()
 {
-    std::cout << "Destructing taskID: " << this->taskId << std::endl;
+    std::cout << "Destructing object " << this->taskId << std::endl;
     this->resources = std::vector<int>();
 };
 
@@ -26,7 +26,7 @@ void Task::setFromJSONObj(std::string x, json y)
     int resourcesNumber = y["resources"].size(); // Get the number of resources
     for (int counter = 0; counter < resourcesNumber; ++counter)
     {
-        resources.push_back( y["resources"][counter]);
+        resources.push_back(y["resources"][counter]);
     };
     payoff = y["payoff"];
 };
