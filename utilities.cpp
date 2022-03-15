@@ -18,13 +18,42 @@ Task *getTasks(char *tasksInput, int &tasksNumber)
     return tasksArray;
 };
 
+int *getTasksPriorities(Task const *tasksArray, const int &tasksNumber)
+{
+
+    int *TasksPrioritiesArray = new int[tasksNumber];
+    int tmpPriority;
+    int counter, counterNested;
+
+    for (counter = 0; counter < tasksNumber; ++counter)
+    {
+        tmpPriority = 0;
+        for (counterNested = 0; counterNested < tasksNumber; ++counterNested)
+        {
+            if (tasksArray[counter].payoff < tasksArray[counterNested].payoff)
+            {
+                tmpPriority += 1;
+            }
+        }
+        TasksPrioritiesArray[counter] = tmpPriority;
+    }
+    for (counter = 0; counter < tasksNumber; ++counter) // If tasks have same payoff, prioritize by order
+    {
+        if (TasksPrioritiesArray[counter] == TasksPrioritiesArray[counter + 1])
+        {
+            TasksPrioritiesArray[counter + 1] += 1;
+        }
+    }
+    return TasksPrioritiesArray;
+};
+
 Satellite *getSatellites(char *satellitesInput, int &satellitesNumber)
 {
-    std::ifstream tasksInputFile(satellitesInput); // Read satellites from file
-    json tasksJSON;                                // Satellites to JSON object
-    tasksInputFile >> tasksJSON;                   //
-    satellitesNumber = tasksJSON.size();           // Total number of tasks
-    Satellite *satellitesArray = new Satellite[satellitesNumber];      // Create array of Satellite objects (calling default constructor)
+    std::ifstream tasksInputFile(satellitesInput);                // Read satellites from file
+    json tasksJSON;                                               // Satellites to JSON object
+    tasksInputFile >> tasksJSON;                                  //
+    satellitesNumber = tasksJSON.size();                          // Total number of tasks
+    Satellite *satellitesArray = new Satellite[satellitesNumber]; // Create array of Satellite objects (calling default constructor)
     int counter = 0;
     for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
     {
