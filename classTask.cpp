@@ -8,17 +8,16 @@ Task::Task()
     name = "undefined";
     payoff = 0. / 0.;
     assignedToSatelliteId = "undefined";
+    completed = false;
 };
 
 /* Destructor */
 Task::~Task()
 {
-    std::cout << "Destructing object " << this->taskId << std::endl;
     this->resources = std::vector<int>();
 };
 
-/* Set task from JSON object      */
-// TODO: redefine as constructor?
+/* Set task from JSON object */
 void Task::setFromJSONObj(std::string x, json y)
 {
     taskId = x;
@@ -29,6 +28,7 @@ void Task::setFromJSONObj(std::string x, json y)
         resources.push_back(y["resources"][counter]);
     };
     payoff = y["payoff"];
+    completed = y["completed"];
 };
 
 /* Print task details */

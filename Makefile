@@ -1,7 +1,7 @@
 CC=g++
 INCDIR=.
 LDIR=.
-LIBS=#-lm
+LIBS=-lpthread #-lm
 CFLAGS=-I$(INCDIR) -L$(LDIR) $(LIBS)
 
 DEPS = classSatellite.hpp  classTask.hpp  ./include/json.hpp  taskManager.hpp  utilities.hpp 

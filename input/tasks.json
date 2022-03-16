@@ -33,6 +33,15 @@
             6
         ],
         "payoff": 0.1,
+        "completed": true
+    },
+    "task5": {
+        "name": "elude",
+        "resources": [
+            7,
+            8
+        ],
+        "payoff": 100,
         "completed": false
     }
 }

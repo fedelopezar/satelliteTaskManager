@@ -1,5 +1,6 @@
-extern Task *getTasks(char *tasksInput, int &tasksNumber);
-extern Satellite *getSatellites(char *satellitesInput, int &satellitesNumber);
-extern int *getTasksPriorities(Task const *tasksArray, const int &tasksNumber);
-extern int getIndexInt(int *array, int length, int value);
+extern void getTasks(char *tasksInput, std::vector<Task> &tasksVec);
+extern void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec);
+extern void sortTasksByPayoff(std::vector<Task> &tasksVec);
 extern bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesToUse);
+void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector< Satellite> &satellitesVec);
+

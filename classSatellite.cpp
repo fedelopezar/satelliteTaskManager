@@ -11,12 +11,10 @@ Satellite::Satellite()
 /* Destructor */
 Satellite::~Satellite()
 {
-    std::cout << "Destructing object " << this->satelliteId << std::endl;
     this->resourcesInUse = std::vector<int>();
 };
 
-/* Set satellite from JSON object      */
-// TODO: redefine as constructor?
+/* Set satellite from JSON object */
 void Satellite::setFromJSONObj(std::string x, json y)
 {
     satelliteId = x;

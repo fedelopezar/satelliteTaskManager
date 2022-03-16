@@ -2,75 +2,65 @@
 #include "classTask.hpp"
 #include "classSatellite.hpp"
 
-Task *getTasks(char *tasksInput, int &tasksNumber)
+void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
 {
     std::ifstream tasksInputFile(tasksInput); // Read tasks from file
     json tasksJSON;                           // Tasks to JSON object
     tasksInputFile >> tasksJSON;              //
-    tasksNumber = tasksJSON.size();           // Total number of tasks
-    Task *tasksArray = new Task[tasksNumber]; // Create array of Task objects (calling default constructor)
+    int tasksNumber = tasksJSON.size();       // Total number of tasks
     int counter = 0;
     for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
     {
-        tasksArray[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
+        tasksVec.push_back(Task());                                               // Initialize default task
+        tasksVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
         ++counter;
     }
-    return tasksArray;
-};
-
-int *getTasksPriorities(Task const *tasksArray, const int &tasksNumber)
-{
-
-    int *TasksPrioritiesArray = new int[tasksNumber];
-    int tmpPriority;
-    int counter, counterNested;
-
-    for (counter = 0; counter < tasksNumber; ++counter)
+    for (counter = 0; counter < tasksNumber; ++counter) // Ignore completed tasks
     {
-        tmpPriority = 0;
-        for (counterNested = 0; counterNested < tasksNumber; ++counterNested)
+        if (tasksVec[counter].completed)
         {
-            if (tasksArray[counter].payoff < tasksArray[counterNested].payoff)
-            {
-                tmpPriority += 1;
-            }
-        }
-        TasksPrioritiesArray[counter] = tmpPriority;
-    }
-    for (counter = 0; counter < tasksNumber; ++counter) // If tasks have same payoff, prioritize by order
-    {
-        if (TasksPrioritiesArray[counter] == TasksPrioritiesArray[counter + 1])
-        {
-            TasksPrioritiesArray[counter + 1] += 1;
+            std::cout << "Ignoring " << tasksVec[counter].taskId << " since has been completed." << std::endl;
+            tasksVec.erase(tasksVec.begin() + counter);
+            --tasksNumber;
+            --counter;
         }
     }
-    return TasksPrioritiesArray;
 };
 
-Satellite *getSatellites(char *satellitesInput, int &satellitesNumber)
+void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
 {
-    std::ifstream tasksInputFile(satellitesInput);                // Read satellites from file
-    json tasksJSON;                                               // Satellites to JSON object
-    tasksInputFile >> tasksJSON;                                  //
-    satellitesNumber = tasksJSON.size();                          // Total number of tasks
-    Satellite *satellitesArray = new Satellite[satellitesNumber]; // Create array of Satellite objects (calling default constructor)
+    std::ifstream tasksInputFile(satellitesInput); // Read satellites from file
+    json tasksJSON;                                // Satellites to JSON object
+    tasksInputFile >> tasksJSON;                   //
+    int satellitesNumber = tasksJSON.size();       // Total number of tasks
     int counter = 0;
     for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
     {
-        satellitesArray[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
+        satellitesVec.push_back(Satellite());
+        satellitesVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
         ++counter;
     }
-    return satellitesArray;
 }
 
-int getIndexInt(int *array, int length, int value)
+void sortTasksByPayoff(std::vector<Task> &tasksVec)
 {
-    int i = 0;
-    while (i < length && array[i] != value)
+    int n = tasksVec.size();
+    int new_n;
+    int counter;
+
+    while (n > 0)
     {
-        ++i;
+        new_n = 0;
+        for (counter = 0; counter < (n - 1); ++counter)
+        {
+            if (tasksVec[counter].payoff < tasksVec[counter + 1].payoff)
+            {
+                std::swap(tasksVec[counter], tasksVec[counter + 1]);
+                new_n = counter+1;
+            }
+        }
+        n = new_n;
     }
-    return (i < length) ? i : 0 / 0;
 }
 
 bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesToUse)
@@ -84,4 +74,33 @@ bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesT
         }
     }
     return true;
+}
+
+void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite> &satellitesVec)
+{
+    int tasksNumber = tasksVec.size();
+    int satellitesNumber = satellitesVec.size();
+    int itTask, itSatellite;
+
+    for (int itTask = 0; itTask < tasksNumber; ++itTask)
+    {
+        std::cout << "-- " << tasksVec[itTask].taskId << " received" << std::endl;
+        for (int itSatellite = 0; itSatellite < satellitesNumber; ++itSatellite)
+        {
+            if (checkResources(satellitesVec[itSatellite].resourcesInUse, tasksVec[itTask].resources)) // Check if this satellite have resources available
+            {
+                for (auto i : tasksVec[itTask].resources)
+                {
+                    satellitesVec[itSatellite].resourcesInUse.push_back(i); // Update resources in use
+                }
+                tasksVec[itTask].assignedToSatelliteId = satellitesVec[itSatellite].satelliteId;
+                std::cout << tasksVec[itTask].taskId << " assigned to " << satellitesVec[itSatellite].satelliteId << std::endl;
+                break;
+            }
+            else
+            {
+                std::cout << "Can't assign " << tasksVec[itTask].taskId << " to " << satellitesVec[itSatellite].satelliteId << ", resources occupied " << std::endl;
+            }
+        }
+    }
 }

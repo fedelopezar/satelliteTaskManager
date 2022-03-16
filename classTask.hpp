@@ -8,7 +8,8 @@ public:
     std::vector<int> resources;
     double payoff;
     std::string assignedToSatelliteId;
-    Task(); // Default constructor
+    bool completed;
+    Task();  // Default constructor
     ~Task(); // Destructor
     void setFromJSONObj(std::string x, json y);
     void print();
