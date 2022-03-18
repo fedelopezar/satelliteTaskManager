@@ -54,7 +54,7 @@ void Satellite::doTasks(std::vector<Task> &tasksVec)
 
             time = std::chrono::system_clock::now(); // Get time task ends
             timeOut = std::chrono::system_clock::to_time_t(time);
-            if (probSuccess > 20)
+            if (probSuccess > 10)
             {
                 std::lock_guard<std::mutex> guard(taskVecMutex); // lock_guard the writing of shared reference to avoid writing race among threads
                 task.completed = true;
