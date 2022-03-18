@@ -9,6 +9,8 @@ public:
     double payoff;
     std::string assignedToSatelliteId;
     bool completed;
+    std::string timeStart;
+    std::string timeEnd;
     Task();  // Default constructor
     ~Task(); // Destructor
     void setFromJSONObj(std::string x, json y);

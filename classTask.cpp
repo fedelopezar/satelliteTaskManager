@@ -9,6 +9,8 @@ Task::Task()
     payoff = 0. / 0.;
     assignedToSatelliteId = "undefined";
     completed = false;
+    timeStart = "undefined";
+    timeEnd = "undefined";
 };
 
 /* Destructor */

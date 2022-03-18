@@ -35,36 +35,52 @@ void Satellite::doTasks(std::vector<Task> &tasksVec)
     int probSuccess, durationTask;
     srand(time(NULL));
     auto time = std::chrono::system_clock::now();
+    //char *timeStr = new char[100];
+    std::string timeStr;
     for (auto &task : tasksVec) // Get task by reference so we modify the shared tasksVec
     {
         if (task.assignedToSatelliteId == this->satelliteId) //  Just do the tasks assigned to this satellite
         {
             time = std::chrono::system_clock::now(); // Get time task starts
             std::time_t timeOut = std::chrono::system_clock::to_time_t(time);
+            timeStr = std::ctime(&timeOut);
+            if (!timeStr.empty())
+            {
+                timeStr.pop_back();
+                timeStr.pop_back(); // Remove endl from time string
+            }
             {
                 std::lock_guard<std::mutex> guard(taskVecMutex); // lock_guard the writing of shared refere
-                std::cout << this->satelliteId << " STARTED " << task.taskId << " at " << std::ctime(&timeOut);
+                std::cout << this->satelliteId << " STARTED " << task.taskId << " at " << timeStr << std::endl;
             }
+            task.timeStart = timeStr;
 
             // DOING THE ACTUAL TASKS //
-            durationTask = rand() % 10; // Random number between 0 and 4
+            durationTask = rand() % 5; // Random number between 0 and 4
             std::this_thread::sleep_for(std::chrono::seconds(durationTask));
             probSuccess = rand() % 100; // Random number between 0 and 99
             // // // // // // // // // //
 
             time = std::chrono::system_clock::now(); // Get time task ends
             timeOut = std::chrono::system_clock::to_time_t(time);
+            timeStr = std::ctime(&timeOut);
+            if (!timeStr.empty())
+            {
+                timeStr.pop_back();
+                timeStr.pop_back(); // Remove endl from time string
+            }
             if (probSuccess > 10)
             {
                 std::lock_guard<std::mutex> guard(taskVecMutex); // lock_guard the writing of shared reference to avoid writing race among threads
                 task.completed = true;
-                std::cout << this->satelliteId << " FINISHED (SUCCESS) " << task.taskId << " at " << std::ctime(&timeOut);
+                std::cout << this->satelliteId << " FINISHED (SUCCESS) " << task.taskId << " at " << timeStr << std::endl;
             }
             else
             {
                 std::lock_guard<std::mutex> guard(taskVecMutex); // lock_guard the writing of shared reference to avoid writing race among threads
-                std::cout << this->satelliteId << " FINISHED (FAIL) " << task.taskId << " at " << std::ctime(&timeOut);
+                std::cout << this->satelliteId << " FINISHED (FAIL) " << task.taskId << " at " << timeStr << std::endl;
             }
+            task.timeEnd = timeStr;
         }
     }
 }

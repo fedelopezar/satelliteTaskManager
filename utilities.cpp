@@ -134,3 +134,29 @@ void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite>
         }
     }
 }
+
+void writeTasks(char *tasksInput, char *tasksOutput, std::vector<Task> &tasksVec)
+{
+    std::cout << std::endl
+              << "----- Writting tasks to " << tasksOutput << " -----" << std::endl
+              << std::endl;
+
+    std::ifstream tasksInputFile(tasksInput); // Read tasks from file
+    json tasksJSON;                           // Tasks to JSON object
+    tasksInputFile >> tasksJSON;              //
+    int tasksNumber = tasksJSON.size();       // Total number of tasks
+    for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
+    {
+        for (auto task : tasksVec)
+        {
+            if (taskJSONObj.key() == task.taskId)
+            {
+                taskJSONObj.value()["completed"] = task.completed;
+                taskJSONObj.value()["timeStart"] = task.timeStart;
+                taskJSONObj.value()["timeEnd"] = task.timeEnd;
+            }
+        }
+    }
+    std::ofstream o(tasksOutput);
+    o << std::setw(4) << tasksJSON << std::endl;
+}

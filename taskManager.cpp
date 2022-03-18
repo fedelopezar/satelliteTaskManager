@@ -38,6 +38,9 @@ int main(int argc, char **argv)
             th.join();
     }
 
+
+    writeTasks( argv[1], argv[3], tasksVec);
+
     // write prettified JSON to another file
     //std::ofstream o("pretty.json");
     //o << std::setw(4) << j << std::endl;
