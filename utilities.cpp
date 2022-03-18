@@ -1,9 +1,12 @@
 #include "taskManager.hpp"
-#include "classTask.hpp"
-#include "classSatellite.hpp"
+#include "classSatellite.hpp" // Includes classTask.hpp
 
 void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
 {
+    std::cout << std::endl
+              << "----- Reading tasks from " << tasksInput << " -----" << std::endl
+              << std::endl;
+
     std::ifstream tasksInputFile(tasksInput); // Read tasks from file
     json tasksJSON;                           // Tasks to JSON object
     tasksInputFile >> tasksJSON;              //
@@ -19,7 +22,7 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
     {
         if (tasksVec[counter].completed)
         {
-            std::cout << "Ignoring " << tasksVec[counter].taskId << " since has been completed." << std::endl;
+            std::cout << "- Ignoring " << tasksVec[counter].taskId << " because completed." << std::endl;
             tasksVec.erase(tasksVec.begin() + counter);
             --tasksNumber;
             --counter;
@@ -29,6 +32,10 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
 
 void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
 {
+    std::cout << std::endl
+              << "----- Reading satellites from " << satellitesInput << " -----" << std::endl
+              << std::endl;
+
     std::ifstream tasksInputFile(satellitesInput); // Read satellites from file
     json tasksJSON;                                // Satellites to JSON object
     tasksInputFile >> tasksJSON;                   //
@@ -39,6 +46,12 @@ void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
         satellitesVec.push_back(Satellite());
         satellitesVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
         ++counter;
+    }
+
+    std::cout << "- List of available satellites:" << std::endl;
+    for (auto satellite : satellitesVec)
+    {
+        std::cout << satellite.satelliteId << std::endl;
     }
 }
 
@@ -56,10 +69,16 @@ void sortTasksByPayoff(std::vector<Task> &tasksVec)
             if (tasksVec[counter].payoff < tasksVec[counter + 1].payoff)
             {
                 std::swap(tasksVec[counter], tasksVec[counter + 1]);
-                new_n = counter+1;
+                new_n = counter + 1;
             }
         }
         n = new_n;
+    }
+
+    std::cout << "- List of tasks to process (ordered by payoff):" << std::endl;
+    for (auto task : tasksVec)
+    {
+        std::cout << task.taskId << " " << task.name << ", payoff = " << task.payoff << std::endl;
     }
 }
 
@@ -78,13 +97,17 @@ bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesT
 
 void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite> &satellitesVec)
 {
+    std::cout << std::endl
+              << "----- Assigning tasks to satellites "
+              << " -----" << std::endl
+              << std::endl;
+
     int tasksNumber = tasksVec.size();
     int satellitesNumber = satellitesVec.size();
     int itTask, itSatellite;
 
     for (int itTask = 0; itTask < tasksNumber; ++itTask)
     {
-        std::cout << "-- " << tasksVec[itTask].taskId << " received" << std::endl;
         for (int itSatellite = 0; itSatellite < satellitesNumber; ++itSatellite)
         {
             if (checkResources(satellitesVec[itSatellite].resourcesInUse, tasksVec[itTask].resources)) // Check if this satellite have resources available
@@ -94,13 +117,20 @@ void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite>
                     satellitesVec[itSatellite].resourcesInUse.push_back(i); // Update resources in use
                 }
                 tasksVec[itTask].assignedToSatelliteId = satellitesVec[itSatellite].satelliteId;
-                std::cout << tasksVec[itTask].taskId << " assigned to " << satellitesVec[itSatellite].satelliteId << std::endl;
                 break;
             }
-            else
-            {
-                std::cout << "Can't assign " << tasksVec[itTask].taskId << " to " << satellitesVec[itSatellite].satelliteId << ", resources occupied " << std::endl;
-            }
+        }
+    }
+
+    for (auto task : tasksVec)
+    {
+        if (task.assignedToSatelliteId != "undefined")
+        {
+            std::cout << task.taskId << " assigned to " << task.assignedToSatelliteId << std::endl;
+        }
+        else
+        {
+            std::cout << task.taskId << " could not been assigned, resources unavailable." << std::endl;
         }
     }
 }

@@ -1,4 +1,5 @@
 #include "taskManager.hpp"
+#include "classTask.hpp"
 
 class Satellite
 {
@@ -10,4 +11,5 @@ public:
     ~Satellite(); // Destructor
     void setFromJSONObj(std::string x, json y);
     void print();
+    void doTasks(std::vector<Task> &tasksVec);
 };
