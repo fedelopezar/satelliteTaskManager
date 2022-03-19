@@ -25,24 +25,20 @@ int main(int argc, char **argv)
               << "----- Submitting tasks -----" << std::endl
               << std::endl;
     std::vector<std::thread> vecOfThreads;
-    for (auto satellite : satellitesVec) // Loop doTasks over satellites, each runs in a parallel thread
+    for (auto satellite : satellitesVec) // Loop over satellites, each running in a parallel thread
     {
-        // In the following, we need to explicity ask to send a reference because it is dangerous.
-        // We take care guarding data races with lock_guard.
+        // We need to explicity ask to send the reference tasksVec to each thread because it is dangerous.
+        // We are being carefull guarding data races with lock_guard.
         vecOfThreads.push_back(std::thread(&Satellite::doTasks, satellite, std::ref(tasksVec)));
     }
-
-    for (std::thread &th : vecOfThreads)
+    for (std::thread &th : vecOfThreads) // Join the threads
     {
         if (th.joinable()) // Check if thread has not detached
             th.join();
     }
 
+    /* Write the results of task processes */
+    writeTasks(argv[1], argv[3], tasksVec);
 
-    writeTasks( argv[1], argv[3], tasksVec);
-
-    // write prettified JSON to another file
-    //std::ofstream o("pretty.json");
-    //o << std::setw(4) << j << std::endl;
     return 0;
 }
