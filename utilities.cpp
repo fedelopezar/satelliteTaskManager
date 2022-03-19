@@ -213,4 +213,50 @@ void writeTasks(char *tasksInput, char *tasksOutput, std::vector<Task> &tasksVec
     }
     std::ofstream o(tasksOutput);
     o << std::setw(4) << tasksJSON << std::endl;
+
+    std::cout << "- Done." << std::endl;
+}
+
+/* * * 
+    writeSummary( &tasksVec, &satellitesVec)
+    --------------------------------
+
+    -- Writes summary of tasks results to cout.
+
+ * * */
+void writeSummary(std::vector<Task> &tasksVec, std::vector<Satellite> &satellitesVec)
+{
+    std::cout << std::endl
+              << "----- Summary -----" << std::endl
+              << std::endl;
+
+    int numberTasks = tasksVec.size();
+    int completedTasks = 0;
+    for (auto task : tasksVec)
+    {
+        if (task.completed)
+        {
+            ++completedTasks;
+        }
+    }
+    std::cout << "- Completed " << completedTasks << "/" << numberTasks << " tasks:" << std::endl;
+
+    int tasksAssigned, tasksCompleted;
+    for (auto satellite : satellitesVec)
+    {
+        tasksAssigned = 0;
+        tasksCompleted = 0;
+        for (auto task : tasksVec)
+        {
+            if (task.assignedToSatelliteId == satellite.satelliteId)
+            {
+                ++tasksAssigned;
+                if (task.completed)
+                {
+                    ++tasksCompleted;
+                }
+            }
+        }
+        std::cout << satellite.satelliteId << " completed " << tasksCompleted << "/" << tasksAssigned << std::endl;
+    }
 }

@@ -37,8 +37,11 @@ int main(int argc, char **argv)
             th.join();
     }
 
-    /* Write the results of task processes */
+    /* Write the results of task processes to JSON file*/
     writeTasks(argv[1], argv[3], tasksVec);
+
+    /* Write summary to cout */
+    writeSummary( tasksVec, satellitesVec);
 
     return 0;
 }
