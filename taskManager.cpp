@@ -27,8 +27,8 @@ int main(int argc, char **argv)
     std::vector<std::thread> vecOfThreads;
     for (auto satellite : satellitesVec) // Loop over satellites, each running in a parallel thread
     {
-        // We need to explicity ask to send the reference tasksVec to each thread because it is dangerous.
-        // We are being carefull guarding data races with lock_guard.
+        // We need to ask explicity to send the reference tasksVec to each thread, because it is dangerous.
+        // We are carefull by guarding data races with lock_guard.
         vecOfThreads.push_back(std::thread(&Satellite::doTasks, satellite, std::ref(tasksVec)));
     }
     for (std::thread &th : vecOfThreads) // Join the threads

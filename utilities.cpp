@@ -1,6 +1,17 @@
 #include "taskManager.hpp"
 #include "classSatellite.hpp" // Includes classTask.hpp
 
+/* * * 
+    getTasks( tasksInput, &tasksVec)
+    --------------------------------
+
+    -- Reads tasks to do from JSON file.
+    -- Initializes Task objects and pushes them into 
+    the vector tasksVec.
+    -- Ignores tasks from input that have already been
+    completed.
+
+ * * */
 void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
 {
     std::cout << std::endl
@@ -10,7 +21,6 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
     std::ifstream tasksInputFile(tasksInput); // Read tasks from file
     json tasksJSON;                           // Tasks to JSON object
     tasksInputFile >> tasksJSON;              //
-    int tasksNumber = tasksJSON.size();       // Total number of tasks
     int counter = 0;
     for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
     {
@@ -18,7 +28,8 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
         tasksVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
         ++counter;
     }
-    for (counter = 0; counter < tasksNumber; ++counter) // Ignore completed tasks
+    int tasksNumber = tasksJSON.size();                 // Total number of tasks
+    for (counter = 0; counter < tasksNumber; ++counter) // Erase completed tasks
     {
         if (tasksVec[counter].completed)
         {
@@ -30,6 +41,15 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
     }
 };
 
+/* * * 
+    getSatellites( satellitesInput, &satellitesVec)
+    -----------------------------------------------
+
+    -- Reads available satellites from JSON file.
+    -- Initializes Satellite objects and pushes them into 
+    the vector satellitesVec.
+
+ * * */
 void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
 {
     std::cout << std::endl
@@ -55,6 +75,13 @@ void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
     }
 }
 
+/* * *
+    sortTasksByPayoff( &tasksVec)
+    ----------------------------
+
+    -- Optimized bubbleSort to sort tasksVec by payoff
+
+ * * */
 void sortTasksByPayoff(std::vector<Task> &tasksVec)
 {
     int n = tasksVec.size();
@@ -82,6 +109,15 @@ void sortTasksByPayoff(std::vector<Task> &tasksVec)
     }
 }
 
+/* * *
+    checkResources( resourcesInUse, resourcesToUse)
+    ----------------------------------------------
+
+    -- Called by assignSatellitesToTasks(...), checks if
+    the resources to use by a task are available in a specific
+    satellite.
+    
+ * * */
 bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesToUse)
 {
     for (int i : resourcesToUse)
@@ -95,6 +131,15 @@ bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesT
     return true;
 }
 
+/* * *
+    assignSatellitesToTasks( &tasksVec, &satellitesVec)
+    --------------------------------------------------
+
+    -- Loops over tasks and satellites and, if resources are
+    available, assigns tasks to satellite. In particular,
+    sets the attribute task.assignedToSatelliteId .
+    
+ * * */
 void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite> &satellitesVec)
 {
     std::cout << std::endl
@@ -106,23 +151,23 @@ void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite>
     int satellitesNumber = satellitesVec.size();
     int itTask, itSatellite;
 
-    for (int itTask = 0; itTask < tasksNumber; ++itTask)
+    for (auto &task : tasksVec) // Access element by reference to modify the vector permanently
     {
-        for (int itSatellite = 0; itSatellite < satellitesNumber; ++itSatellite)
+        for (auto &satellite : satellitesVec) // Access element by reference to modify the vector permanently
         {
-            if (checkResources(satellitesVec[itSatellite].resourcesInUse, tasksVec[itTask].resources)) // Check if this satellite have resources available
+            if (checkResources(satellite.resourcesInUse, task.resources)) // Check if this satellite have resources available
             {
-                for (auto i : tasksVec[itTask].resources)
+                for (auto i : task.resources)
                 {
-                    satellitesVec[itSatellite].resourcesInUse.push_back(i); // Update resources in use
+                    satellite.resourcesInUse.push_back(i); // Update resources in use
                 }
-                tasksVec[itTask].assignedToSatelliteId = satellitesVec[itSatellite].satelliteId;
+                task.assignedToSatelliteId = satellite.satelliteId; // Set satellite assigned to task
                 break;
             }
         }
     }
 
-    for (auto task : tasksVec)
+    for (auto task : tasksVec) // Write summary to cout
     {
         if (task.assignedToSatelliteId != "undefined")
         {
@@ -135,6 +180,15 @@ void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite>
     }
 }
 
+/* * * 
+    writeTasks( tasksInput, tasksOutput, &tasksVec)
+    --------------------------------
+
+    -- Writes updated tasks to JSON file. In particular,
+    it declares if each task has been completed (or not) and
+    the event timers.
+
+ * * */
 void writeTasks(char *tasksInput, char *tasksOutput, std::vector<Task> &tasksVec)
 {
     std::cout << std::endl

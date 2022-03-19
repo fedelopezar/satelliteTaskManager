@@ -9,4 +9,4 @@
 #include <ctime>
 #include "include/json.hpp"
 using json = nlohmann::json;
-extern std::mutex taskVecMutex; // Global mutex
+extern std::mutex taskVecMutex; // Declare global mutex

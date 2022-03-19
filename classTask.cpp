@@ -6,6 +6,7 @@ Task::Task()
 {
     taskId = "undefined";
     name = "undefined";
+    resources = std::vector<int>();
     payoff = 0. / 0.;
     assignedToSatelliteId = "undefined";
     completed = false;
@@ -16,29 +17,34 @@ Task::Task()
 /* Destructor */
 Task::~Task()
 {
-    this->resources = std::vector<int>();
+    this->resources = std::vector<int>(); // Release vector memory
 };
 
-/* Set task from JSON object */
+/* Set Task details from JSON object */
 void Task::setFromJSONObj(std::string x, json y)
 {
     taskId = x;
     name = y["name"];
-    int resourcesNumber = y["resources"].size(); // Get the number of resources
-    for (int counter = 0; counter < resourcesNumber; ++counter)
-    {
-        resources.push_back(y["resources"][counter]);
-    };
+    for (auto resource : y["resources"])
+    { // Moving resources from JSON to resources attribute
+        resources.push_back(resource);
+    }
     payoff = y["payoff"];
     completed = y["completed"];
 };
 
-/* Print task details */
+/* Print Task details */
 void Task::print()
 {
     std::cout << "===" << std::endl;
     std::cout << "taskID: " << this->taskId << std::endl;
     std::cout << "name: " << this->name << std::endl;
     std::cout << "payoff: " << this->payoff << std::endl;
-    std::cout << "===" << std::endl;
+    std::cout << "resources: [ ";
+    for (auto resource : this->resources)
+    {
+        std::cout << resource << " ";
+    }
+    std::cout << "]" << std::endl
+              << "===" << std::endl;
 };
