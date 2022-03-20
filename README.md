@@ -26,3 +26,5 @@ Practice of task manager for satellite operations
 - **Run** the task Manager with your specific input tasks, input satellites, and output file, as arguments:
   - `./taskManager input/tasks.json input/satellites.json output/tasks.json`
 
+- If some tasks failed, and want to re-submit them, **re-run** using the latest output file of tasks as input.
+  
