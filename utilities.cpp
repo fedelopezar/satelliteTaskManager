@@ -24,19 +24,15 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
     int counter = 0;
     for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
     {
-        tasksVec.push_back(Task());                                               // Initialize default task
-        tasksVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
-        ++counter;
-    }
-    int tasksNumber = tasksJSON.size();                 // Total number of tasks
-    for (counter = 0; counter < tasksNumber; ++counter) // Erase completed tasks
-    {
-        if (tasksVec[counter].completed)
+        if (!taskJSONObj.value()["completed"]) // Ignore already completed tasks
         {
-            std::cout << "- Ignoring " << tasksVec[counter].taskId << " because completed." << std::endl;
-            tasksVec.erase(tasksVec.begin() + counter);
-            --tasksNumber;
-            --counter;
+            tasksVec.push_back(Task());                                               // Initialize default task
+            tasksVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
+            ++counter;
+        }
+        else
+        {
+            std::cout << "- Ignoring " << taskJSONObj.key() << " because completed." << std::endl;
         }
     }
 };
@@ -63,9 +59,16 @@ void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
     int counter = 0;
     for (json::iterator taskJSONObj = tasksJSON.begin(); taskJSONObj != tasksJSON.end(); ++taskJSONObj)
     {
-        satellitesVec.push_back(Satellite());
-        satellitesVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
-        ++counter;
+        if (taskJSONObj.value()["status"] == "IDLE")
+        {
+            satellitesVec.push_back(Satellite());
+            satellitesVec[counter].setFromJSONObj(taskJSONObj.key(), taskJSONObj.value()); // Set each Task details
+            ++counter;
+        }
+        else
+        {
+            std::cout << "- Ignoring " << taskJSONObj.key() << " because not IDLE." << std::endl;
+        }
     }
 
     std::cout << "- List of available satellites:" << std::endl;
