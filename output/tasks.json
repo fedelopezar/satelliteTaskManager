@@ -1,0 +1,46 @@
+{
+    "task1": {
+        "completed": true,
+        "name": "fotos",
+        "payoff": 10,
+        "resources": [
+            1,
+            5
+        ],
+        "timeEnd": "Sat Mar 19 11:42:15 202",
+        "timeStart": "Sat Mar 19 11:42:11 202"
+    },
+    "task2": {
+        "completed": true,
+        "name": "mantenimiento",
+        "payoff": 1,
+        "resources": [
+            1,
+            2
+        ],
+        "timeEnd": "Sat Mar 19 11:42:14 202",
+        "timeStart": "Sat Mar 19 11:42:11 202"
+    },
+    "task3": {
+        "completed": true,
+        "name": "pruebas",
+        "payoff": 1,
+        "resources": [
+            5,
+            6
+        ],
+        "timeEnd": "Sat Mar 19 11:42:18 202",
+        "timeStart": "Sat Mar 19 11:42:14 202"
+    },
+    "task4": {
+        "completed": false,
+        "name": "fsck",
+        "payoff": 0.1,
+        "resources": [
+            1,
+            6
+        ],
+        "timeEnd": "undefined",
+        "timeStart": "undefined"
+    }
+}
