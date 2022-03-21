@@ -1,6 +1,6 @@
 # Satellite Task Manager
 
-Practice of task manager for satellite operations.
+Simulator of task manager for satellite operations.
 
 ---
 
@@ -9,8 +9,7 @@ distributes such tasks to the satellite constellation.
 
 The submission process to each satellite is done in parallel threads.
 
-Each task requests specific resources in the satellite, and it might not
-be possible to submit all of them. 
+Since each task occupies specific resources in the satellite, resources might not be enough and it might not be possible to submit every task. 
 
 The decision-making of which tasks to prioritize
 is based on the payoff of each task; the software is designed to maximize the
@@ -30,7 +29,7 @@ In the end, the software outputs an update of the status of each task. This outp
     - Include a `name` that describes each task.
     - Itemize the satellite `resources` requested by each task as an array of integer identifiers. The tasks that request a same resource will not be submitted to the same satellite.
     - Quantify the `payoff` of each tasks. The task manager will maximize the total payoff,  given the available resources.
-    - Tasks with the attribute `completed` set to `true` will be ignored by the tasks manager.
+    - The tasks with the attribute `completed` set to `true` will be ignored by the task manager.
 
 - Enumerate the available **satellites** in a JSON file. Follow the example file `input/satellite.json`. Consider:
   - The `key` of each satellite must be unique. If there are repeated keys, only the last will be considered.

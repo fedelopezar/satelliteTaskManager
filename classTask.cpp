@@ -7,7 +7,7 @@ Task::Task()
     taskId = "undefined";
     name = "undefined";
     resources = std::vector<int>();
-    payoff = 0. / 0.;
+    payoff = 0. / 0.;   // Initialize to NaN
     assignedToSatelliteId = "undefined";
     completed = false;
     timeStart = "undefined";

@@ -41,10 +41,9 @@ void Satellite::print()
     doTasks( &tasksVec)
     -------------------
 
-    -- Method of Satellite, submits all the assigned tasks
-    to each satellite.
+    -- Method for Satellite, submits all the assigned tasks.
     -- Takes tasksVec as reference to modify the assigned
-    tasks by completed or not, and event timers.
+    tasks by completed or not, and store event timers.
     -- Usually called in parallel threads for each satellite,
     so using lock_guard to avoid data races.
     

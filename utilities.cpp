@@ -5,7 +5,7 @@
     getTasks( tasksInput, &tasksVec)
     --------------------------------
 
-    -- Reads tasks to do from JSON file.
+    -- Reads target tasks from JSON file.
     -- Initializes Task objects and pushes them into 
     the vector tasksVec.
     -- Ignores tasks from input that have already been
@@ -44,6 +44,7 @@ void getTasks(char *tasksInput, std::vector<Task> &tasksVec)
     -- Reads available satellites from JSON file.
     -- Initializes Satellite objects and pushes them into 
     the vector satellitesVec.
+    -- Ignores satellites with status not IDLE.
 
  * * */
 void getSatellites(char *satellitesInput, std::vector<Satellite> &satellitesVec)
@@ -138,8 +139,8 @@ bool checkResources(std::vector<int> resourcesInUse, std::vector<int> resourcesT
     assignSatellitesToTasks( &tasksVec, &satellitesVec)
     --------------------------------------------------
 
-    -- Loops over tasks and satellites and, if resources are
-    available, assigns tasks to satellite. In particular,
+    -- Loops over tasks and satellites and, if resources 
+    allow, assigns tasks to satellite. In particular,
     sets the attribute task.assignedToSatelliteId .
     
  * * */
@@ -188,7 +189,7 @@ void assignSatellitesToTasks(std::vector<Task> &tasksVec, std::vector<Satellite>
     --------------------------------
 
     -- Writes updated tasks to JSON file. In particular,
-    it declares if each task has been completed (or not) and
+    it updates if each task has been completed (or not) and
     the event timers.
 
  * * */
