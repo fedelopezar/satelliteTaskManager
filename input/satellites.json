@@ -4,5 +4,8 @@
     },
     "satellite2": {
         "status": "IDLE"
+    },
+    "satellite3": {
+        "status": "MAINTENANCE"
     }
 }
